@@ -2,6 +2,12 @@ package lesson1;
 
 import kotlin.NotImplementedError;
 
+import java.io.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.regex.Pattern;
+
 @SuppressWarnings("unused")
 public class JavaTasks {
     /**
@@ -34,8 +40,32 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortTimes(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTimes(String inputName, String outputName) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(inputName));
+        ArrayList<String> am = new ArrayList<>();
+        ArrayList<String> pm = new ArrayList<>();
+        String line = reader.readLine();
+        while (line != null) {
+            if (Pattern.matches("^((0[1-9])|(1[0-2])):[0-5][0-9]:[0-5][0-9] (AM|PM)$", line)) {
+                if (line.startsWith("12")) {
+                    line = "00" + line.substring(2);
+                }
+                if (line.endsWith("AM")) am.add(line);
+                else pm.add(line);
+            }
+            line = reader.readLine();
+        }
+        reader.close();
+        Collections.sort(am);
+        Collections.sort(pm);
+        am.addAll(pm);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
+        for (String s : am) {
+            if (s.startsWith("00"))
+                s = "12" + s.substring(2);
+            writer.write(s + "n");
+        }
+        writer.close();
     }
 
     /**
@@ -99,7 +129,7 @@ public class JavaTasks {
      * 121.3
      */
     static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+
     }
 
     /**
