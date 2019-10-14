@@ -6,6 +6,7 @@ import java.io.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
@@ -59,11 +60,11 @@ public class JavaTasks {
         Collections.sort(am);
         Collections.sort(pm);
         am.addAll(pm);
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
+        PrintWriter writer = new PrintWriter(outputName);
         for (String s : am) {
             if (s.startsWith("00"))
                 s = "12" + s.substring(2);
-            writer.write(s + "n");
+            writer.println(s);
         }
         writer.close();
     }
