@@ -1,12 +1,11 @@
 package lesson1;
 
 import kotlin.NotImplementedError;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Scanner;
+import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
@@ -47,13 +46,14 @@ public class JavaTasks {
         ArrayList<String> pm = new ArrayList<>();
         String line = reader.readLine();
         while (line != null) {
-            if (Pattern.matches("^((0[1-9])|(1[0-2])):[0-5][0-9]:[0-5][0-9] (AM|PM)$", line)) {
+            if (line.matches("((0[1-9])|(1[0-2])):[0-5][0-9]:[0-5][0-9] (AM|PM)")) {
                 if (line.startsWith("12")) {
                     line = "00" + line.substring(2);
                 }
                 if (line.endsWith("AM")) am.add(line);
                 else pm.add(line);
             }
+            else throw new IllegalArgumentException("Неверный формат данных");
             line = reader.readLine();
         }
         reader.close();
@@ -95,8 +95,39 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortAddresses(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortAddresses(String inputName, String outputName) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(inputName));
+        TreeMap<String, TreeSet<String>> result = new TreeMap<>();
+        String line = reader.readLine();
+        while (line != null) {
+            Matcher m = Pattern.compile("^([A-zёА-я-]+ [A-zёА-я-]+) - ([A-zёА-я-]+ [0-9][0-9]*)$").matcher(line);
+            if (m.matches()) {
+                StringBuilder s = new StringBuilder(m.group(2));
+                if (s.charAt(s.length() - 2) == ' ') s.insert(s.length() - 1, '0');
+                String str = s.toString();
+                if (result.get(str) != null)
+                    result.get(str).add(m.group(1));
+                else {
+                    TreeSet<String> set = new TreeSet<>();
+                    set.add(m.group(1));
+                    result.put(str, set);
+                }
+            } else throw new IllegalArgumentException("Неверный формат данных");
+            line = reader.readLine();
+        }
+        reader.close();
+        PrintWriter writer = new PrintWriter(new File(outputName));
+        for (Map.Entry<String, TreeSet<String>> entry : result.entrySet()) {
+            {
+                StringBuilder s = new StringBuilder(entry.getKey());
+                if (s.charAt(s.length() - 2) == '0') s.deleteCharAt(s.length() - 2);
+                s.append(" - ");
+                for (String str: entry.getValue())
+                    s.append(str).append(", ");
+                writer.println(s.substring(0, s.length() - 2));
+            }
+        }
+        writer.close();
     }
 
     /**
@@ -129,9 +160,30 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-
+    static public void sortTemperatures(String inputName, String outputName) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(inputName));
+        TreeMap<Short, Integer> result = new TreeMap<>();
+        String line = reader.readLine();
+        final short min_t = -2730;
+        final short max_t = 5000;
+        while (line != null) {
+            short n = (short) (Float.parseFloat(line)*10);
+            if (n >= min_t && n <= max_t)
+                result.merge(n, 1, (a, b) -> a + b);
+            else throw new IllegalArgumentException("Неверные входные данные");
+            line = reader.readLine();
+        }
+        reader.close();
+        PrintWriter writer = new PrintWriter(new File(outputName));
+        for (Map.Entry<Short, Integer> entry : result.entrySet()) {
+            for (int i = 0; i < entry.getValue(); i++) {
+                float n = (float) entry.getKey() / 10;
+                writer.println(n);
+            }
+        }
+        writer.close();
     }
+
 
     /**
      * Сортировка последовательности
