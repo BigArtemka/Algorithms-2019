@@ -100,7 +100,7 @@ public class JavaTasks {
         TreeMap<String, TreeSet<String>> result = new TreeMap<>();
         String line = reader.readLine();
         while (line != null) {
-            Matcher m = Pattern.compile("^([A-zёА-я-]+ [A-zёА-я-]+) - ([A-zёА-я-]+ [0-9][0-9]*)$").matcher(line);
+            Matcher m = Pattern.compile("^([A-zёЁА-я-]+ [A-zёЁА-я-]+) - ([A-zёЁА-я-]+ [0-9][0-9]*)$").matcher(line);
             if (m.matches()) {
                 StringBuilder s = new StringBuilder(m.group(2));
                 if (s.charAt(s.length() - 2) == ' ') s.insert(s.length() - 1, '0');
