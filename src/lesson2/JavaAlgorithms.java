@@ -4,7 +4,6 @@ import kotlin.NotImplementedError;
 import kotlin.Pair;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -106,6 +105,8 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
+    //Трудоемкость O(n*m), где n - ков-во символов в первом слове
+    //Ресурсоёмкость O(n*m)    m - кол-во символов во втором слове
     static public String longestCommonSubstring(String firs, String second) {
         int[][] arr = new int[firs.length()][second.length()];
         int maxX = 0, maxY = 0;
@@ -165,6 +166,11 @@ public class JavaAlgorithms {
      * В файле буквы разделены пробелами, строки -- переносами строк.
      * Остальные символы ни в файле, ни в словах не допускаются.
      */
+    /*Трудоемкость O(W*M*P*3^(N-1)), где W - кол-во слов,
+        M - кол-во строк в матрице
+        P - кол-во столбцов в матрице
+        N - длина слова
+      Ресурсоёмкость O(W*M*P*3^(N-1))*/
     static public Set<String> baldaSearcher(String inputName, Set<String> words) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
         String str = reader.readLine();
@@ -181,9 +187,13 @@ public class JavaAlgorithms {
             count++;
         }
         Set<String> result = new HashSet<>();
+        //O(W)
         words.forEach(word -> {
+            //O(M)
             for (int i = 0; i < balda.size(); ++i) {
+                //O(P)
                 for (int j = 0; j < balda.get(i).size(); ++j) {
+                    //O(3^(N-1))
                     if (tryNext(balda, word, 0, i, j)) {
                         result.add(word);
                         return;
@@ -194,6 +204,12 @@ public class JavaAlgorithms {
         return result;
     }
 
+    /*Трудоёмкость O(3^(N-1)) где, N - длина слова
+    Метод изначально в худшем случае вызовется 4 раза, а потом
+    в худшем случае будет вызываться 3 раза, так как один из соседних
+    элементов всегда будет равен null.
+    Ресурсоемкость O(3^(N-1))
+    */
     static private boolean tryNext(List<List<Character>> balda, String word, int index, int i, int j) {
         if (index == word.length()) return true;
         char current = word.charAt(index);
@@ -201,18 +217,21 @@ public class JavaAlgorithms {
         else {
             boolean top = false, right = false,
                     bot = false, left = false;
+            balda = new ArrayList<>(balda);
+            balda.set(i, new ArrayList<>(balda.get(i)));
+            balda.get(i).set(j, null);
             int countCols = balda.get(i).size();
             int countRows = balda.size();
-            if (i < countRows - 1) {
+            if (i < countRows - 1 && balda.get(i + 1).get(j) != null) {
                 top = tryNext(balda, word, index + 1, i + 1, j);
             }
-            if (j < countCols - 1) {
+            if (j < countCols - 1 && balda.get(i).get(j + 1) != null) {
                 right = tryNext(balda, word, index + 1, i, j + 1);
             }
-            if (i > 0) {
+            if (i > 0 && balda.get(i - 1).get(j) != null) {
                 bot = tryNext(balda, word, index + 1, i - 1, j);
             }
-            if (j > 0) {
+            if (j > 0 && balda.get(i).get(j - 1) != null) {
                 left = tryNext(balda, word, index + 1, i, j - 1);
             }
             return left || top || right || bot;

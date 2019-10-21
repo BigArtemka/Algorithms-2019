@@ -1,7 +1,6 @@
 package lesson1;
 
 import kotlin.NotImplementedError;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
 import java.util.*;
@@ -40,11 +39,15 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
+    //Трудоемкость O(n*log(n)), где n - кол-во строк в файле
+    //Ресурсоёмкость O(n)
     static public void sortTimes(String inputName, String outputName) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
         ArrayList<String> am = new ArrayList<>();
         ArrayList<String> pm = new ArrayList<>();
         String line = reader.readLine();
+
+        //O(n) - чтение из файла
         while (line != null) {
             if (line.matches("((0[1-9])|(1[0-2])):[0-5][0-9]:[0-5][0-9] (AM|PM)")) {
                 if (line.startsWith("12")) {
@@ -56,9 +59,12 @@ public class JavaTasks {
             else throw new IllegalArgumentException("Неверный формат данных");
             line = reader.readLine();
         }
+
         reader.close();
+        //O(n*log(n)) - алгоритм быстрой сортировки
         Collections.sort(am);
         Collections.sort(pm);
+
         am.addAll(pm);
         PrintWriter writer = new PrintWriter(outputName);
         for (String s : am) {
@@ -95,21 +101,26 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
+    //Трудоемкость O(n*log(n)), где n - кол-во строк в файле
+    //Ресурсоёмкость O(n)
     static public void sortAddresses(String inputName, String outputName) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
         Map<String, TreeSet<String>> result = new TreeMap<>();
         String line = reader.readLine();
+        //O(n) - чтение из файла
         while (line != null) {
             Matcher m = Pattern.compile("^([A-zёЁА-я-]+ [A-zёЁА-я-]+) - ([A-zёЁА-я-]+ [0-9][0-9]*)$").matcher(line);
             if (m.matches()) {
                 StringBuilder s = new StringBuilder(m.group(2));
-                if (s.charAt(s.length() - 2) == ' ') s.insert(s.length() - 1, '0');
+                if (s.charAt(s.length() - 2) == ' ')
+                    s.insert(s.length() - 1, '0');
                 String str = s.toString();
                 if (result.get(str) != null)
                     result.get(str).add(m.group(1));
                 else {
                     TreeSet<String> set = new TreeSet<>();
                     set.add(m.group(1));
+                    //log(n) - вставка в TreeMap
                     result.put(str, set);
                 }
             } else throw new IllegalArgumentException("Неверный формат данных");
@@ -160,15 +171,19 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
+    //Трудоемкость O(n*log(n)), где n - кол-во строк в файле
+    //Ресурсоёмкость O(k), где k - кол-во различных температур
     static public void sortTemperatures(String inputName, String outputName) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
         Map<Short, Integer> result = new TreeMap<>();
         String line = reader.readLine();
         final short min_t = -2730;
         final short max_t = 5000;
+        //O(n) - чтение из файла
         while (line != null) {
             short n = (short) (Float.parseFloat(line)*10);
             if (n >= min_t && n <= max_t)
+                //O(log(n)) - вставка
                 result.merge(n, 1, (a, b) -> a + b);
             else throw new IllegalArgumentException("Неверные входные данные");
             line = reader.readLine();
