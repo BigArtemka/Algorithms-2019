@@ -170,5 +170,13 @@ abstract class AbstractAlgorithmsTests {
                 )
             )
         )
+        assertEquals(
+            setOf("ЯК"),
+            baldaSearcher(
+                "input/balda_in4.txt", setOf(
+                    "КОСЯК", "ЯК", "ХАХ"
+                )
+            )
+        )
     }
 }

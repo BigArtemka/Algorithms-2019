@@ -97,7 +97,7 @@ public class JavaTasks {
      */
     static public void sortAddresses(String inputName, String outputName) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
-        TreeMap<String, TreeSet<String>> result = new TreeMap<>();
+        Map<String, TreeSet<String>> result = new TreeMap<>();
         String line = reader.readLine();
         while (line != null) {
             Matcher m = Pattern.compile("^([A-zёЁА-я-]+ [A-zёЁА-я-]+) - ([A-zёЁА-я-]+ [0-9][0-9]*)$").matcher(line);
@@ -162,7 +162,7 @@ public class JavaTasks {
      */
     static public void sortTemperatures(String inputName, String outputName) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(inputName));
-        TreeMap<Short, Integer> result = new TreeMap<>();
+        Map<Short, Integer> result = new TreeMap<>();
         String line = reader.readLine();
         final short min_t = -2730;
         final short max_t = 5000;
