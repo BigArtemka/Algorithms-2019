@@ -2,7 +2,11 @@ package lesson6;
 
 import kotlin.NotImplementedError;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static java.lang.Math.max;
 
 @SuppressWarnings("unused")
 public class JavaDynamicTasks {
@@ -19,7 +23,37 @@ public class JavaDynamicTasks {
      * При сравнении подстрок, регистр символов *имеет* значение.
      */
     public static String longestCommonSubSequence(String first, String second) {
-        throw new NotImplementedError();
+        int fl = first.length();
+        int sl = second.length();
+        int[][] lcs = new int[fl + 1][sl + 1];
+        StringBuilder result = new StringBuilder();
+
+        for (int i = fl - 1; i >= 0; i--) {
+            for (int j = sl - 1; j >= 0; j--) {
+                if (first.charAt(i) == second.charAt(j)) {
+                    lcs[i][j] = lcs[i + 1][j + 1] + 1;
+                } else {
+                    lcs[i][j] = max(lcs[i + 1][j], lcs[i][j + 1]);
+                }
+            }
+        }
+
+        int i = 0, j = 0;
+        while (lcs[i][j] != 0 && i < fl && j < sl) {
+            if (first.charAt(i) == second.charAt(j)) {
+                result.append(first.charAt(i));
+                i++;
+                j++;
+            } else {
+                if (lcs[i][j] == lcs[i + 1][j])
+                    i++;
+                else
+                    j++;
+            }
+        }
+
+
+        return result.toString();
     }
 
     /**
@@ -34,8 +68,37 @@ public class JavaDynamicTasks {
      * то вернуть ту, в которой числа расположены раньше (приоритет имеют первые числа).
      * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
      */
+    /*
+        Трудоёмкость O(n^2) - где n - количество элмементов в списке
+        Ресурсоёмкость O(n)
+     */
     public static List<Integer> longestIncreasingSubSequence(List<Integer> list) {
-        throw new NotImplementedError();
+            if (list.isEmpty()) return new ArrayList<>();
+            int[] l = new int[list.size()];
+            int[] prev = new int[list.size()];
+            int max = 0;
+
+            for (int i = 0; i < list.size(); i++) {
+                l[i] = 1;
+                prev[i] = -1;
+                for (int j = 0; j < i; j++) {
+                    if (list.get(j) < list.get(i))
+                        if (l[j] + 1 > l[i]) {
+                            l[i] = l[j] + 1;
+                            prev[i] = j;
+                        }
+                }
+                if (l[i] > l[max]) max = i;
+            }
+
+            List<Integer> res = new ArrayList<>();
+            while (max != -1) {
+                res.add(list.get(max));
+                max = prev[max];
+            }
+
+            Collections.reverse(res);
+            return res;
     }
 
     /**
