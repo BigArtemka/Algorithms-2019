@@ -22,6 +22,10 @@ public class JavaDynamicTasks {
      * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
      * При сравнении подстрок, регистр символов *имеет* значение.
      */
+    /*
+    Трудоёмкость O(m*n), где m, n - длины первого и второго слова соотв.
+    Ресурсоёмкость O(m*n)
+     */
     public static String longestCommonSubSequence(String first, String second) {
         int fl = first.length();
         int sl = second.length();
